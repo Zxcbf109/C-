@@ -1,0 +1,3 @@
+D:/TheGametest/build/CMakeFiles/game.dir
+D:/TheGametest/build/CMakeFiles/edit_cache.dir
+D:/TheGametest/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,1 @@
+  -L"D:/SFML-2.6.2/lib"  -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-system -lsfml-network -lws2_32 -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
