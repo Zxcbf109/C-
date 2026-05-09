@@ -13,7 +13,7 @@ void SoundManager::setSFXVolume(float vol) {
 
 void SoundManager::setBGMVolume(float vol) {
     if (vol < 0.f) vol = 0.f;
-    if (vol > 100.f) vol = 100.f;
+    if (vol > 50.f) vol = 50.f;
     m_bgmVolume = vol;
     m_bgm.setVolume(m_bgmVolume);
 }

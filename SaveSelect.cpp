@@ -53,7 +53,7 @@ static const char* diffName(int d) {
 static constexpr float TITLE_Y = 120.f;        // 标题Y位置
 static constexpr float SLOT_Y[NUM_SAVE_SLOTS] = { 220.f, 380.f, 540.f }; // Slot Y位置（文字中心）
 static constexpr float INFO_OFFSET_Y = 50.f;  // 说明文字在Slot下方偏移（50px间距）
-static constexpr float SCREEN_CENTER_X = 640.f; // 窗口总宽度1280的水平居中
+static constexpr float SCREEN_CENTER_X = 960.f; // 窗口总宽度1920的水平居中
 
 // ---- SaveSelect implementation ----
 SaveSelect::SaveSelect(const sf::Font& font) {

@@ -22,19 +22,17 @@ int main() {
     // 游戏区域比例 1:1 (正方形)
     const float GAME_WIDTH = 960.f;
     const float GAME_HEIGHT = 960.f;
-    const float UI_WIDTH = 320.f;
-    const float TOTAL_WIDTH = GAME_WIDTH + UI_WIDTH;
 
-    // 根据屏幕高度计算窗口大小，1:1比例
-    float windowSize = screenHeight * 0.95f;
+    // 根据屏幕高度计算窗口大小，1:1比例 (1280x960 * 1.5)
+    float windowSize = 1280.f * 1.5f;
 
-    // 如果正方形窗口宽度超出屏幕，等比例缩小
+    // 如果窗口宽度超出屏幕，等比例缩小
     if (windowSize > screenWidth * 0.95f) {
         windowSize = screenWidth * 0.95f;
     }
 
     // 初始为窗口模式，可通过F11切换全屏
-    sf::RenderWindow window(sf::VideoMode(static_cast<unsigned int>(windowSize), static_cast<unsigned int>(windowSize)),
+    sf::RenderWindow window(sf::VideoMode(1920, 1440),
                              "Ice Fairy Bullet Hell", sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize);
     window.setFramerateLimit(60);
     window.setVerticalSyncEnabled(true);
@@ -49,7 +47,7 @@ int main() {
     const float CENTER_X = GAME_WIDTH / 2.f;  // 387.5f
 
     // 计算缩放比例以适配窗口
-    float scaleX = windowSize / TOTAL_WIDTH;
+    float scaleX = windowSize / GAME_WIDTH;
     float scaleY = windowSize / GAME_HEIGHT;
     float scale = std::min(scaleX, scaleY);
 
@@ -100,9 +98,9 @@ int main() {
     std::array<std::string, OPTION_COUNT> menuLabels = {"START", "CONTINUE", "SOUND", "EXIT"};
 
     // 菜单统一居中
-    const float MENU_CENTER_X = 480.f;  // 居中X坐标
-    const float MENU_START_Y = 380.f;    // 起始Y坐标
-    const float MENU_SPACING = 100.f;    // 选项间距
+    const float MENU_CENTER_X = 960.f;  // 居中X坐标
+    const float MENU_START_Y = 420.f;    // 起始Y坐标（使四个选项的中点在y轴居中）
+    const float MENU_SPACING = 200.f;    // 选项间距
 
     for (int i = 0; i < OPTION_COUNT; ++i) {
         menuItems[i].text.setFont(font);
@@ -122,11 +120,11 @@ int main() {
     }
 
     // 选中高亮框 - 居中于菜单项
-    sf::RectangleShape menuHighlight(sf::Vector2f(220.f, 60.f));
+    sf::RectangleShape menuHighlight(sf::Vector2f(220.f, 78.f));
     menuHighlight.setFillColor(sf::Color(255, 255, 100, 60));
     menuHighlight.setOutlineColor(sf::Color(255, 255, 0, 200));
     menuHighlight.setOutlineThickness(3.f);
-    menuHighlight.setOrigin(110.f, 30.f);
+    menuHighlight.setOrigin(110.f, 39.f);
     menuHighlight.setPosition(MENU_CENTER_X, MENU_START_Y);
 
     // 选中箭头 - 居中于高亮框左侧
@@ -158,7 +156,6 @@ int main() {
     GameUI gameUI;
     gameUI.getStats().difficulty = static_cast<int>(difficultySelect.getSelectedDifficulty());
     gameUI.getStats().progress = 0;
-    gameUI.getStats().graze = 0;
     // life和bombs由Player初始化，这里同步到UI
     gameUI.getStats().life = player.getLife();
     gameUI.getStats().bombs = player.getBombs();
@@ -188,11 +185,11 @@ int main() {
     // ---- 暂停菜单 ----
     enum PauseOption { CONTINUE_GAME, EXIT_TO_MENU, PAUSE_OPTION_COUNT };
     PauseOption pauseSelected = CONTINUE_GAME;
-    const float pauseSelectedSize = 48.f;
-    const float pauseNormalSize = 36.f;
+    const float pauseSelectedSize = 85.f;
+    const float pauseNormalSize = 75.f;
 
-    sf::Text pauseContinueText(L"继续", font, 36);
-    sf::Text pauseExitText(L"退出", font, 36);
+    sf::Text pauseContinueText(L"继续", font, 70);
+    sf::Text pauseExitText(L"退出", font, 70);
     pauseContinueText.setStyle(sf::Text::Bold);
     pauseContinueText.setFillColor(sf::Color::White);
     pauseContinueText.setOutlineColor(sf::Color::Black);
@@ -202,22 +199,29 @@ int main() {
     pauseExitText.setOutlineColor(sf::Color::Black);
     pauseExitText.setOutlineThickness(2.f);
 
-    float pauseFontSizes[PAUSE_OPTION_COUNT] = { 48.f, 36.f };
+    float pauseFontSizes[PAUSE_OPTION_COUNT] = { 85.f, 75.f };
 
-    // 暂停菜单垂直位置：居中，间距100px
-    const float pauseCenterY = 480.f;
+    // 暂停菜单垂直位置：居中于1440高度窗口，间距100px
+    const float pauseCenterY = 720.f;
     const float pauseContinueY = pauseCenterY - 50.f;  // 继续在上方
     const float pauseExitY = pauseCenterY + 50.f;      // 退出在下方
 
     // 设置初始位置
     pauseContinueText.setOrigin(18.f, 18.f);  // 大约居中
-    pauseContinueText.setPosition(CENTER_X, pauseContinueY);
+    pauseContinueText.setPosition(960.f, pauseContinueY);
     pauseExitText.setOrigin(18.f, 18.f);
-    pauseExitText.setPosition(CENTER_X, pauseExitY);
+    pauseExitText.setPosition(960.f, pauseExitY);
 
     // 半透明遮罩 (修改为游戏区域大小)
-    sf::RectangleShape pauseOverlay(sf::Vector2f(GAME_WIDTH, GAME_HEIGHT));
+    sf::RectangleShape pauseOverlay(sf::Vector2f(1920.f, 1440.f));
     pauseOverlay.setFillColor(sf::Color(0, 0, 0, 160));
+
+    // 暂停菜单选中高亮框
+    sf::RectangleShape pauseHighlight(sf::Vector2f(180.f, 90.f));
+    pauseHighlight.setFillColor(sf::Color(255, 255, 100, 60));
+    pauseHighlight.setOutlineColor(sf::Color(255, 255, 0, 200));
+    pauseHighlight.setOutlineThickness(3.f);
+    pauseHighlight.setOrigin(90.f, 45.f);
 
     // ---- 音效设置页面的 UI ----
     sf::Text soundTitle("SOUND SETTINGS", font, 51);
@@ -297,7 +301,7 @@ int main() {
                 float newHeight = static_cast<float>(newSize.y);
 
                 // 重新计算缩放比例以适配新的窗口大小
-                float newScaleX = newWidth / TOTAL_WIDTH;
+                float newScaleX = newWidth / GAME_WIDTH;
                 float newScaleY = newHeight / GAME_HEIGHT;
                 float newScale = std::min(newScaleX, newScaleY);
 
@@ -442,7 +446,6 @@ int main() {
                     gameUI.getStats().bombs = player.getBombs();
                     gameUI.getStats().difficulty = currentGameData.difficulty;
                     gameUI.getStats().progress = 0;
-                    gameUI.getStats().graze = 0;
                 }
             } else if (state == 4) {
                 // ---- 暂停菜单 ----
@@ -463,10 +466,15 @@ int main() {
                         if (pauseSelected == CONTINUE_GAME) {
                             state = 1;
                         } else if (pauseSelected == EXIT_TO_MENU) {
-                            saveSelect.setSaveMode(true);
-                            saveSelect.setSaveData(currentGameData);
-                            saveSelect.refresh();
-                            state = 6;
+                            // 退出时自动保存当前进度到存档0
+                            currentGameData.lives = player.getLife();
+                            currentGameData.bombs = player.getBombs();
+                            currentGameData.progress = gameUI.getStats().progress;
+                            currentSaveSlot = 0;
+                            saveToFile(currentGameData, getSavePath(0));
+                            state = 0;
+                            selected = START;
+                            hasAnySave = anySaveExists();
                         }
                     }
                     if (pauseSelected != prev) {
@@ -503,7 +511,6 @@ int main() {
                     gameUI.getStats().bombs = player.getBombs();
                     gameUI.getStats().difficulty = currentGameData.difficulty;
                     gameUI.getStats().progress = currentGameData.progress;
-                    gameUI.getStats().graze = 0;
                 }
             } else if (state == 6) {
                 // ---- 退出存档选择 (保存模式) ----
@@ -528,7 +535,7 @@ int main() {
         if (state == 0) {
             float speed = 300.f * dt;
             for (int i = 0; i < OPTION_COUNT; ++i) {
-                float targetSize = (i == selected) ? 48.f : 36.f;
+                float targetSize = (i == selected) ? 85.f : 75.f;
                 if (menuItems[i].currentSize < targetSize)
                     menuItems[i].currentSize = std::min(menuItems[i].currentSize + speed, targetSize);
                 else if (menuItems[i].currentSize > targetSize)
@@ -569,8 +576,16 @@ int main() {
             gameUI.getStats().life = player.getLife();
             gameUI.getStats().bombs = player.getBombs();
 
-            // 同步擦弹数
-            gameUI.getStats().graze = player.getGrazeCount();
+            // BOSS血量条：游戏一开始就是满的
+            int difficulty = currentGameData.difficulty;
+            int bossMaxHp = 10000;
+            switch (difficulty) {
+                case 0: bossMaxHp = 6000; break;
+                case 1: bossMaxHp = 10000; break;
+                case 2: bossMaxHp = 15000; break;
+                case 3: bossMaxHp = 25000; break;
+            }
+            gameUI.setBossHp(bossMaxHp, bossMaxHp);
 
             // 同步Player HP（每条命视为100HP）
             gameUI.setPlayerHp(player.getLife() * 100, 500);
@@ -654,7 +669,11 @@ int main() {
                 // 关卡通关
                 stageClearTimer -= dt;
                 if (stageClearTimer <= 0.f) {
-                    // 通关后返回菜单
+                    // 通关后返回菜单，保存进度
+                    currentGameData.lives = player.getLife();
+                    currentGameData.bombs = player.getBombs();
+                    currentGameData.progress = 100;
+                    saveToFile(currentGameData, getSavePath(currentSaveSlot));
                     state = 0;
                     selected = START;
                     hasAnySave = anySaveExists();
@@ -663,6 +682,11 @@ int main() {
 
             // 检测死亡
             if (!player.isAlive()) {
+                // 死亡时自动保存进度
+                currentGameData.lives = player.getLife();
+                currentGameData.bombs = player.getBombs();
+                currentGameData.progress = gameUI.getStats().progress;
+                saveToFile(currentGameData, getSavePath(currentSaveSlot));
                 state = 0;
             }
         }
@@ -682,6 +706,11 @@ int main() {
             }
             pauseContinueText.setCharacterSize(static_cast<unsigned int>(pauseFontSizes[CONTINUE_GAME]));
             pauseExitText.setCharacterSize(static_cast<unsigned int>(pauseFontSizes[EXIT_TO_MENU]));
+
+            // 高亮框跟随选中项
+            float highlightY = (pauseSelected == CONTINUE_GAME) ? pauseContinueY : pauseExitY;
+            sf::Vector2f hlPos = pauseHighlight.getPosition();
+            pauseHighlight.setPosition(960.f, hlPos.y + (highlightY - hlPos.y) * 0.2f);
         }
 
         if (state == 5) {
@@ -707,8 +736,8 @@ int main() {
             text.setOrigin(bounds.width / 2.f, 0);  // 只水平居中
             text.setPosition(x, text.getPosition().y);
         };
-        centerTextH(pauseContinueText, CENTER_X);
-        centerTextH(pauseExitText, CENTER_X);
+        centerTextH(pauseContinueText, 960.f);
+        centerTextH(pauseExitText, 960.f);
 
         // ---- 更新音效设置页面 ----
         if (state == 2) {
@@ -755,6 +784,7 @@ int main() {
                 // 暂停菜单使用默认视图
                 window.setView(window.getDefaultView());
                 window.draw(pauseOverlay);
+                window.draw(pauseHighlight);
                 window.draw(pauseContinueText);
                 window.draw(pauseExitText);
             } else {

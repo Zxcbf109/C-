@@ -52,12 +52,6 @@ public:
     // 重置玩家状态（用于重新开始）
     void resetPlayerState();
 
-    // 擦弹检测
-    int checkGraze(EnemyBulletManager* enemyBullets);
-
-    // 获取擦弹数
-    int getGrazeCount() const { return m_grazeCount; }
-
     // 获取当前弹幕管理器
     EnemyBulletManager* getEnemyBulletManager() { return m_enemyBulletManager; }
     void setEnemyBulletManager(EnemyBulletManager* mgr) { m_enemyBulletManager = mgr; }
@@ -122,10 +116,6 @@ private:
     // ---- 无敌时间 ----
     float m_invincibleTimer = 0.f;
     static constexpr float INVINCIBLE_DURATION = 2.f;
-
-    // ---- 擦弹计数 ----
-    int m_grazeCount = 0;
-    bool m_grazedThisFrame = false;
 
     void initAnimations();
     void playAnimation(const std::string& name);

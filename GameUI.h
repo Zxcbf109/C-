@@ -5,7 +5,6 @@ struct GameStats {
     int life = 5;         // 残机数
     int bombs = 3;        // 符卡数
     int progress = 0;     // 游戏进度（百分比）
-    int graze = 0;        // 擦弹数
     int difficulty = 0;    // 难度 0=EASY, 1=MEDIUM, 2=HARD, 3=LUNATIC
 
     // Boss血量

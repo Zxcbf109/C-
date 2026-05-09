@@ -21,8 +21,8 @@ public:
 
 private:
     SoundManager() = default;
-    float m_sfxVolume = 50.f;
-    float m_bgmVolume = 50.f;
+    float m_sfxVolume = 100.f;
+    float m_bgmVolume = 100.f;
 
     std::map<std::string, sf::SoundBuffer> m_buffers;
     sf::Sound m_sfxSound;

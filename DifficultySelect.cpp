@@ -10,7 +10,7 @@ DifficultyParams getLunaticParams() { return {1.3f, 1.5f, 2, 1}; }
 // ---- Layout constants ----
 static constexpr float SLOT_Y[DIFFICULTY_COUNT] = { 200.f, 360.f, 520.f, 680.f }; // 难度选项Y位置
 static constexpr float INFO_OFFSET_Y = 50.f;  // 说明文字在选项下方偏移（50px间距）
-static constexpr float SCREEN_CENTER_X = 640.f; // 窗口总宽度1280的水平居中
+static constexpr float SCREEN_CENTER_X = 960.f; // 窗口总宽度1920的水平居中
 
 static const char* NAMES[DIFFICULTY_COUNT]      = { "EASY", "MEDIUM", "HARD", "LUNATIC" };
 static const wchar_t* SUBTITLES[DIFFICULTY_COUNT] = {

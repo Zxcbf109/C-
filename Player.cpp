@@ -31,7 +31,6 @@ Player::Player() {
 
     // ---- 初始化无敌时间 ----
     m_invincibleTimer = 0.f;
-    m_grazeCount = 0;
 }
 
 Player::~Player() {
@@ -42,7 +41,6 @@ void Player::resetPlayerState() {
     m_bombs = 3;
     m_sprite.setPosition(387.5f, 800.f);
     m_invincibleTimer = 0.f;
-    m_grazeCount = 0;
     m_bulletManager->clearAll();
     m_bombSystem = BombSystem();
     playAnimation("idle");
@@ -263,35 +261,6 @@ void Player::hitByLaser() {
     takeDamage();
 }
 
-int Player::checkGraze(EnemyBulletManager* enemyBullets) {
-    if (!enemyBullets) return 0;
-
-    int grazeThisFrame = 0;
-    sf::Vector2f hitboxPos = getHitboxCenter();
-
-    // 获取敌弹数据
-    auto& bullets = enemyBullets->getActiveBullets();
-
-    for (auto& bullet : bullets) {
-        if (!bullet.is_active || bullet.state != EBS_ACTIVE) continue;
-
-        // 计算距离
-        sf::Vector2f diff = bullet.position - hitboxPos;
-        float dist = std::sqrt(diff.x * diff.x + diff.y * diff.y);
-
-        // 擦弹范围是碰撞范围的2倍
-        float grazeDistance = bullet.hitboxRadius + getHitboxRadius() * 2.f;
-
-        if (dist < grazeDistance && dist >= bullet.hitboxRadius + getHitboxRadius()) {
-            // 在擦弹范围内但不在碰撞范围内
-            grazeThisFrame++;
-        }
-    }
-
-    m_grazeCount += grazeThisFrame;
-    return grazeThisFrame;
-}
-
 void Player::checkBulletCollisions() {
     if (!m_enemyBulletManager) return;
     if (m_invincibleTimer > 0.f) return;
@@ -434,11 +403,6 @@ void Player::update(float deltaTime, const sf::Vector2u& windowSize) {
 
     // ---- 检查与敌弹的碰撞 ----
     checkBulletCollisions();
-
-    // ---- 检查擦弹 ----
-    if (m_enemyBulletManager) {
-        checkGraze(m_enemyBulletManager);
-    }
 }
 
 void Player::draw(sf::RenderWindow& window) {
